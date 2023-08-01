@@ -40,7 +40,7 @@ describe('Central de Atendimento ao cliente TAT', function () {
         cy.get('#firstName').type('Karem')
         cy.get('#lastName').type('Andrade')
         cy.get('#email').type('karem@teste.com')
-        cy.get('#phone-checkbox').click()
+        cy.get('#phone-checkbox').check()
         cy.get('#open-text-area').type('teste')
         cy.contains('button', 'Enviar').click()
 
@@ -112,7 +112,7 @@ describe('Central de Atendimento ao cliente TAT', function () {
     it('marca cada tipo de atendimento', function () {
         cy.get('input[type="radio"]')
             .should('have.length', 3)
-            .each(function($radio){
+            .each(function ($radio) {
                 //wrap empacota o elemento e marca
                 cy.wrap($radio).check()
                 cy.wrap($radio).should('be.checked')
@@ -122,8 +122,19 @@ describe('Central de Atendimento ao cliente TAT', function () {
     it('marca ambos checkboxes, depois desmarca o último', function () {
         cy.get('input[type="checkbox"]')
             .check()
+            .should('be.checked')
             .last()
-            .uncheck() 
+            .uncheck()
             .should('not.be.checked')
+    })
+
+    it.only('seleciona um arquivo da pasta fixtures', function () {
+        cy.get('input[type="file"]#file-upload')
+            .should('not.have.value')
+            .selectFile('./cypress/fixtures/example.json')
+            .should(function ($input) {
+                console.log($input)
+                expect($input[0].files[0].name).to.equal('example.json')
+            })
     })
 })
