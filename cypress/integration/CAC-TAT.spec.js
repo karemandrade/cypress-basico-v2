@@ -1,5 +1,6 @@
 /// <reference types="Cypress" />
 describe('Central de Atendimento ao cliente TAT', function () {
+    const THREE_SECONDS_IN_MS = 3000
     beforeEach(function () {
         // visita a página que está na pasta src desse projeto
         cy.visit('./src/index.html')
@@ -10,6 +11,8 @@ describe('Central de Atendimento ao cliente TAT', function () {
 
     it('preenche os campos obrigatórios e envia o formulário', function () {
         const longText = "Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, Teste, "
+        // congela o relógio no navegador
+        cy.clock()
         cy.get('#firstName').type('Karem')
         cy.get('#lastName').type('Andrade')
         cy.get('#email').type('karem@teste.com.br')
@@ -18,6 +21,10 @@ describe('Central de Atendimento ao cliente TAT', function () {
         cy.contains('button', 'Enviar').click()
 
         cy.get('.success').should('be.visible')
+
+        // avança o time do teste para que dê tempo da mensagem sumir, ao invés de ter qe esperar
+        cy.tick(THREE_SECONDS_IN_MS)
+        cy.get('.success').should('not.be.visible')
     })
 
     it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function () {
