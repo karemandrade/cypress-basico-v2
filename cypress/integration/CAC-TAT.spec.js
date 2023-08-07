@@ -148,7 +148,7 @@ describe('Central de Atendimento ao cliente TAT', function () {
     it('seleciona um arquivo simulando drag and drop', function () {
         cy.get('input[type="file"]#file-upload')
             .should('not.have.value')
-            .selectFile('./cypress/fixtures/example.json', {action: 'drag-drop'})
+            .selectFile('./cypress/fixtures/example.json', { action: 'drag-drop' })
             .should(function ($input) {
                 console.log($input)
                 expect($input[0].files[0].name).to.equal('example.json')
@@ -176,4 +176,31 @@ describe('Central de Atendimento ao cliente TAT', function () {
 
         cy.contains('Talking About Testing').should('be.visible')
     })
+
+    it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', function () {
+        cy.get('.success')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Mensagem enviada com sucesso.')
+            .invoke('hide')
+            .should('not.be.visible')
+
+        cy.get('.error')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Valide os campos obrigatórios!')
+            .invoke('hide')
+            .should('not.be.visible')
+    })
+
+    it.only('preenche área de texro usando o comando invoke', function () {
+        // variável que irá criar o texto informado 20x
+        const longText = Cypress._.repeat('0123456789', 20)
+        cy.get('#open-text-area')
+            .invoke('val', longText)
+            .should('have.value', longText)
+    })
 })
+
